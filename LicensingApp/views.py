@@ -42,7 +42,7 @@ def validation(request):
         "businessId":clientBusinessId
     }
     print("Making request to internal API")
-    response = requests.get("http://localhost:8000/clientbusiness/readbyid/",data)
+    response = requests.get("https://orconixlicensevalidation.vercel.app//clientbusiness/readbyid/",data)
     response = response.json()
 
     if not (response["businessId"] == clientBusinessId):
