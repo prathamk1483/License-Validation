@@ -7,7 +7,7 @@ source env/bin/activate
 echo "Environment created"
 
 pip install --upgrade pip
-pip install Django==5.2.7 sqlparse==0.5.3 tzdata==2025.2 djangorestframework==3.16.1
+pip install -r requirements.txt
 
 echo "Installing PsycoPG"
 pip install psycopg2-binary
