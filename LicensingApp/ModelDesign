@@ -1,0 +1,24 @@
+Apps:{
+    name:
+    appId:
+    validLicenses:
+}
+
+License:{
+    licenseKey:
+    validTill:
+    isActive:
+    userBusinesses:
+}
+
+userBusinesses:{
+    name:
+    businessId:
+    domain:
+    machines:
+}
+
+Machines:{
+    macAddress:
+    os:
+}
