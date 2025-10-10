@@ -93,20 +93,21 @@ def updateLicense(request):
     except License.DoesNotExist:
         return JsonResponse({"error": f"No license found with key: {licenseKey}"}, status=404)
 
-    # Update fields if provided
+    newLicenseKey = request.data.get("newLicenseKey")
     isActive = request.data.get("isActive")
-    if isActive is not None and (isActive == True or isActive == False):
+    validTill = request.data.get("validTill")
+    if isActive is not None and (isActive == 0 or isActive == 1):
         license.isActive = bool(isActive)
         params.append("activity status")
-
-    validTill = request.data.get("validTill")
     if validTill:
         try:
             license.validTill = timezone.datetime.fromisoformat(validTill)
             params.append("validity")
         except ValueError:
             return JsonResponse({"error": "Invalid validTill format, must be ISO format"}, status=400)
-
+    if newLicenseKey:
+        license.licenseKey = newLicenseKey
+        params.append("License key")
     businessId = request.data.get("businessId")
     if businessId:
         try:

@@ -28,44 +28,42 @@ def ownerHome(request):
 def clientBusinessHome(request):
     return JsonResponse({"message":"Welcome to Orconix's License Validation API's client Business Home"})
 
+@api_view(["GET"])
 def validation(request):
-    license_key = request.GET.get("license") or request.data.get("license")
-    mac = request.GET.get("macAddress") or request.data.get("macAddress")
-    clientBusinessId = request.GET.get("clientId") or request.data.get("clientId")
+    license_key = request.data.get('license') or request.GET.get('license')
+    mac = request.GET.get("macAddress") or request.data.get('macAddress')
+    clientBusinessId = request.GET.get("clientId") or request.data.get('clientId')
 
-    print("Received MAC :",mac)
-    isValid = True
+    print("REceived values :",license_key,mac,clientBusinessId)
+    isValid = False
     if not(license_key and mac and clientBusinessId):
-        return JsonResponse({"valid": isValid})
+        return JsonResponse({"valid": isValid,"message":"Enter license, mac and clientID"})
 
     data = {
         "businessId":clientBusinessId
     }
-    print("Making request to internal API")
-    response = requests.get("https://orconixlicensevalidation.vercel.app//clientbusiness/readbyid/",data)
+    response = requests.get("http://localhost:8000/clientbusiness/readbyid/",data)
     response = response.json()
-
-    if not (response["businessId"] == clientBusinessId):
-        print("Invalid businessID")
-        return JsonResponse({"valid": False})
     
-    machineFound = False
+    machineIsValid = False
     
     for machine in response["machines"]:
-        print("Found macs :",machine["macAddress"].lower())
-        if machine["macAddress"].lower() == mac.replace(':','-'):
-            machineFound = True
+        if machine["macAddress"].lower() == mac.replace(':','-').lower() and machine["isActive"]:
+            machineIsValid = True
             break
 
-    if not machineFound:
-        return JsonResponse({"valid": False})
+    if not machineIsValid:
+        return JsonResponse({"valid": False, "message":"Your machine is not registered or is inactive"})
     
-    licenseFound = False
+    licenseIsValid = False
     for license in response["ownedLicenses"]:
-        if license["licenseKey"] == license_key:
-            licenseFound = True
+        if license["licenseKey"] == license_key and license["isActive"]:
+            licenseIsValid = True
             break
-
-    isValid = licenseFound and machineFound 
+        
+    if not licenseIsValid:
+        return JsonResponse({"valid": False, "message":"Your license is inactive"})
+    
+    isValid = licenseIsValid and machineIsValid
 
     return JsonResponse({"valid": isValid})

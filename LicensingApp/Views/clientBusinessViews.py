@@ -114,11 +114,11 @@ def getAllBusinesss(request):
 @api_view(['GET'])
 def getBusinessById(request):
     businessId = request.GET.get("businessId") or request.data.get("businessId")
+    print("Received businessID :",businessId)
     if not businessId:
         return JsonResponse({"error": "businessId parameter is required"}, status=400)
 
     try:
-        # Prefetch related M2M fields to reduce queries
         business = ClientBusiness.objects.prefetch_related(
             'owner', 'machines', 'appsOwned', 'ownedLicensesList'
         ).get(businessId=businessId)
@@ -140,7 +140,8 @@ def getBusinessById(request):
             "macAddress": machine.macAddress,
             "os": machine.os,
             "brandName": machine.brandName,
-            "modelName": machine.modelName
+            "modelName": machine.modelName,
+            "isActive": machine.isActive,
         }
         for machine in business.machines.all()
     ]
@@ -158,6 +159,7 @@ def getBusinessById(request):
     owned_licenses_data = [
         {
             "licenseKey": license.licenseKey,
+            "isActive" :license.isActive,
         }
         for license in business.ownedLicensesList.all()
     ]

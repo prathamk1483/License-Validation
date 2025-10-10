@@ -38,7 +38,7 @@ def getMachineByAdd(request):
 @api_view(['GET'])
 def getAllMachines(request):
     machines = Machine.objects.all()
-    data = [{"macAddress": m.macAddress, "os": m.os} for m in machines]
+    data = [{"macAddress": m.macAddress, "os": m.os,"isActive":m.isActive} for m in machines]
     return JsonResponse(data, safe=False)
 
 # Create a new machine
@@ -78,18 +78,21 @@ def updateMachine(request):
     os_name = request.data.get("os")
     brandName = request.data.get("brandName")
     modelName = request.data.get("modelName")
+    isActive = request.data.get("isActive")
     if os_name:
         machine.os = os_name
     if brandName:
         machine.brandName = brandName
     if modelName:
         machine.modelName = modelName
+    if isActive and (isActive == 0 or isActive == 1):
+        machine.isActive = bool(isActive)
 
     machine.save()
 
     return JsonResponse({"message": f"Machine {machine.macAddress} updated successfully"})
 
-# Delete a machine
+
 @api_view(['DELETE'])
 def deleteMachine(request):
     mac = request.data.get("macAddress")
