@@ -42,7 +42,7 @@ def validation(request):
     data = {
         "businessId":clientBusinessId
     }
-    response = requests.get("http://localhost:8000/clientbusiness/readbyid/",data)
+    response = requests.get("https://orconixlicensevalidation.vercel.app/clientbusiness/readbyid/",data)
     response = response.json()
     
     machineIsValid = False
@@ -60,7 +60,7 @@ def validation(request):
         if license["licenseKey"] == license_key and license["isActive"]:
             licenseIsValid = True
             break
-        
+
     if not licenseIsValid:
         return JsonResponse({"valid": False, "message":"Your license is inactive"})
     
