@@ -23,5 +23,11 @@
             "src": "/(.*)",
             "dest": "OrconixLicenseValidator/wsgi.py"
         }
+    ],
+    "crons": [
+        {
+        "path": "/utils/deactivateExpiredLicenses",
+        "schedule": "0 3 * * *"
+        }
     ]
 }

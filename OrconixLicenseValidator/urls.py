@@ -9,5 +9,6 @@ urlpatterns = [
     path('machine/',include('LicensingApp.UrlsHandler.machineUrls')),
     path('owner/',include('LicensingApp.UrlsHandler.ownerUrls')),
     path('clientbusiness/',include('LicensingApp.UrlsHandler.clientBusinessUrls')),
+    path('utils/',include('LicensingApp.UrlsHandler.utilsUrls')),
     path('validateLicense/',include('LicensingApp.urls')),
 ]
