@@ -1,5 +1,5 @@
 from ..models import License
-from datetime import  timezone
+from django.utils import timezone
 from django.http import JsonResponse
 
 def deactivateExpiredLicenses(request):
